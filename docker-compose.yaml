@@ -4,10 +4,10 @@ services:
   postgres:
     image: postgres:14-alpine
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=S3cret
-      - POSTGRES_USER=citizix_user
-      - POSTGRES_DB=citizix_dbdo
+      - POSTGRES_PASSWORD=secret_tabungan
+      - POSTGRES_USER=tabungan_user
+      - POSTGRES_DB=tabungan_db_test
