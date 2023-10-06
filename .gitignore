@@ -1,0 +1,33 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.env*
+creds.json
+deploy/*
+main
+.vscode
+.idea
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+coverage.html
+coverage/
+coverage.out
+
+# Google credential
+google_credential.json
+
+# Vendor
+vendor/
+
+_playground/
+.DS_Store
+
+/node_modules
+alias.config.js
