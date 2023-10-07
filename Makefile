@@ -14,3 +14,9 @@ migration:
 rollback:
 	# https://github.com/golang-migrate/migrate
 	migrate -path migrations -database $(url) down 1
+
+run-app:
+	go run app/main.go
+
+run-subscriber:
+	go run subscriber/main.go

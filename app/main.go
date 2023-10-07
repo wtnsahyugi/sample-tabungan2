@@ -1,16 +1,15 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 
 	"sample-tabungan2/api"
+	"sample-tabungan2/common"
 	"sample-tabungan2/config"
 	"sample-tabungan2/internal/repository"
 	"sample-tabungan2/service/user"
 
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/gocraft/work"
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,17 +20,21 @@ func main() {
 	checkError(err)
 
 	// init db
-	pgxPool, err := NewPgx(*cfg)
+	pgxPool, err := common.NewPgx(*cfg)
 	checkError(err)
 
 	// init repo
 	userRepo := repository.NewUserRepository(pgxPool)
 
+	// init pool worker for async process
+	var enqueuer = work.NewEnqueuer(cfg.WorkerNamespace, common.NewRedisPool(*cfg))
+
 	//init service
-	userSvc := user.NewUserService(userRepo)
+	userSvc := user.NewUserService(userRepo, enqueuer)
 
 	// init handler
 	userHandler := api.NewUserHTTPHandler(userSvc)
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World2!")
 	})
@@ -40,23 +43,6 @@ func main() {
 	e.Add(http.MethodPost, "/tarik", userHandler.Withdraw)
 	e.Logger.Fatal(e.Start(":1323"))
 
-}
-
-func NewPgx(cfg config.Config) (*pgxpool.Pool, error) {
-	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Name,
-	)
-	poolcfg, err := pgxpool.ParseConfig(dbUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	conn, err := pgxpool.ConnectConfig(context.Background(), poolcfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return conn, nil
 }
 
 func checkError(err error) {

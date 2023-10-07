@@ -2,8 +2,11 @@ package user
 
 import (
 	"context"
+	"log"
 	"sample-tabungan2/entity"
+	"time"
 
+	"github.com/gocraft/work"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -29,6 +32,17 @@ func (svc *UserService) Withdraw(ctx context.Context, req WithdrawRequest) (floa
 
 	if err := svc.repo.UpdateSaldo(ctx, req.NoRekening, *data.Saldo); err != nil {
 		return float64(0), err
+	}
+
+	_, err = svc.publisher.Enqueue("transaction_settlement", work.Q{
+		"no_rekening":      req.NoRekening,
+		"nominal":          req.Nominal,
+		"published_at":     time.Now().Format(time.RFC3339),
+		"transaction_type": entity.TransactionTarik,
+	})
+	if err != nil {
+		// should persist error log when fail to publish data
+		log.Println("error when publishing data: " + err.Error())
 	}
 
 	return *data.Saldo, nil

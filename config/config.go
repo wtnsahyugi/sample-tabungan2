@@ -8,11 +8,14 @@ import (
 
 // Config holds configuration for the project.
 type Config struct {
-	Host     string `env:"DATABASE_HOST,default=localhost"`
-	Port     string `env:"DATABASE_PORT,default=5433"`
-	Username string `env:"DATABASE_USERNAME,required"`
-	Password string `env:"DATABASE_PASSWORD,required"`
-	Name     string `env:"DATABASE_NAME,required"`
+	DatabaseHost      string `env:"DATABASE_HOST,default=localhost"`
+	DatabasePort      string `env:"DATABASE_PORT,default=5433"`
+	DatabaseUsername  string `env:"DATABASE_USERNAME,required"`
+	DatabasePassword  string `env:"DATABASE_PASSWORD,required"`
+	DatabaseName      string `env:"DATABASE_NAME,required"`
+	RedisPort         string `env:"REDIS_PORT,default=:6378"`
+	WorkerNamespace   string `env:"WORKER_NAMESPACE,default=tabungan-api"`
+	WorkerConcurrency uint   `env:"WORKER_CONCURRENCY,default=10"`
 }
 
 // NewConfig creates an instance of Config.

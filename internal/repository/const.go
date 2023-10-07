@@ -16,4 +16,8 @@ const (
 	updateUserSaldoByRekening = `
 	UPDATE users SET latest_saldo = $1 WHERE no_rekening = $2;
 	`
+
+	insertTransaction = `
+	INSERT INTO transactions (transaction_code, no_rekening, created_date, nominal) VALUES($1, $2, $3, $4);
+	`
 )

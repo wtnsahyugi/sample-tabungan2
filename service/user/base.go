@@ -1,11 +1,20 @@
 package user
 
-import "sample-tabungan2/internal/repository"
+import (
+	"sample-tabungan2/internal/repository"
+
+	"github.com/gocraft/work"
+)
 
 type UserService struct {
-	repo *repository.UserRepository
+	repo      *repository.UserRepository
+	publisher Publisher
 }
 
-func NewUserService(repo *repository.UserRepository) *UserService {
-	return &UserService{repo: repo}
+type Publisher interface {
+	Enqueue(jobName string, args map[string]interface{}) (*work.Job, error)
+}
+
+func NewUserService(repo *repository.UserRepository, publisher Publisher) *UserService {
+	return &UserService{repo: repo, publisher: publisher}
 }
