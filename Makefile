@@ -10,3 +10,7 @@ migrate:
 migration:
 	# https://github.com/golang-migrate/migrate
 	migrate create -ext sql -dir migrations -seq $(name)
+
+rollback:
+	# https://github.com/golang-migrate/migrate
+	migrate -path migrations -database $(url) down 1
