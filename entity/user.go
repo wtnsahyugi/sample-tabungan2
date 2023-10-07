@@ -6,5 +6,5 @@ type User struct {
 	NIK        string
 	NoHP       string
 	NoRekening string
-	Saldo      float64
+	Saldo      *float64
 }

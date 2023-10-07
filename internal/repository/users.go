@@ -22,16 +22,14 @@ type InsertUserParam struct {
 	NoRekening string `db:"no_rekening"`
 }
 
-func (q *UserRepository) Insert(ctx context.Context, args InsertUserParam) (int64, error) {
-	row := q.db.QueryRow(ctx, insertUser,
+func (q *UserRepository) Insert(ctx context.Context, args InsertUserParam) error {
+	_, err := q.db.Exec(ctx, insertUser,
 		args.Nama,
 		args.NIK,
 		args.NoHP,
 		args.NoRekening,
 	)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
+	return err
 }
 
 func (q *UserRepository) GetByNikAndPhoneNumber(ctx context.Context, nik, phoneNumber string) (entity.User, error) {

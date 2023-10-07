@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     nik             VARCHAR NOT NULL,
     no_hp           VARCHAR NOT NULL,
     no_rekening     VARCHAR NOT NULL,
-    latest_saldo    money
+    latest_saldo    decimal
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS users_nik_no_hp_key

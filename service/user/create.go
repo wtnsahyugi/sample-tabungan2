@@ -18,8 +18,14 @@ const (
 	maxRetry            = 3
 )
 
-func (svc *UserService) Create(ctx context.Context, name, nik, noHp string) (string, error) {
-	data, err := svc.repo.GetByNikAndPhoneNumber(ctx, nik, noHp)
+type CreateRequest struct {
+	Name string `json:"nama"`
+	NIK  string `json:"nik"`
+	NoHP string `json:"no_hp"`
+}
+
+func (svc *UserService) Create(ctx context.Context, req CreateRequest) (string, error) {
+	data, err := svc.repo.GetByNikAndPhoneNumber(ctx, req.NIK, req.NoHP)
 	if err != nil {
 		return "", errors.New("[GetByNikAndPhoneNumber] error: " + err.Error())
 	}
@@ -28,7 +34,7 @@ func (svc *UserService) Create(ctx context.Context, name, nik, noHp string) (str
 		return "", entity.ErrUniqueHpNik
 	}
 
-	var accountNumber string
+	accountNumber := ""
 	i := 0
 	for {
 		// maximum retry generate account number
@@ -36,14 +42,14 @@ func (svc *UserService) Create(ctx context.Context, name, nik, noHp string) (str
 			return "", errors.New("system error when generate account number")
 		}
 
-		accountNumber, errGenerate := generateAccountNumber(nik, noHp)
-		if errGenerate != nil {
+		accountNumber, err = generateAccountNumber(req.NIK, req.NoHP)
+		if err != nil {
 			return "", entity.ErrGenerateNoRekening
 		}
-		_, err := svc.repo.Insert(ctx, repository.InsertUserParam{
-			Nama:       name,
-			NIK:        nik,
-			NoHP:       noHp,
+		err := svc.repo.Insert(ctx, repository.InsertUserParam{
+			Nama:       req.Name,
+			NIK:        req.NIK,
+			NoHP:       req.NoHP,
 			NoRekening: accountNumber,
 		})
 		if err != nil {

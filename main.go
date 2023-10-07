@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"sample-tabungan2/api"
 	"sample-tabungan2/config"
+	"sample-tabungan2/internal/repository"
+	"sample-tabungan2/service/user"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/labstack/echo/v4"
@@ -13,13 +16,26 @@ import (
 
 func main() {
 	e := echo.New()
+	// init config
 	cfg, err := config.NewConfig(".env")
 	checkError(err)
-	_, err = NewPgx(*cfg)
+
+	// init db
+	pgxPool, err := NewPgx(*cfg)
 	checkError(err)
+
+	// init repo
+	userRepo := repository.NewUserRepository(pgxPool)
+
+	//init service
+	userSvc := user.NewUserService(userRepo)
+
+	// init handler
+	userHandler := api.NewUserHTTPHandler(userSvc)
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World2!")
 	})
+	e.Add(http.MethodPost, "/daftar", userHandler.Create)
 	e.Logger.Fatal(e.Start(":1323"))
 
 }

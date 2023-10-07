@@ -7,6 +7,7 @@ const (
 )
 
 var (
-	ErrUniqueHpNik        = errors.New("user already registered")
-	ErrGenerateNoRekening = errors.New("error generate no rekening")
+	ErrUniqueHpNik           = errors.New("user already registered")
+	ErrGenerateNoRekening    = errors.New("error generate no rekening")
+	ErrInvalidRequestPayload = errors.New("invalid request")
 )
