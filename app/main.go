@@ -7,6 +7,7 @@ import (
 	"sample-tabungan2/common"
 	"sample-tabungan2/config"
 	"sample-tabungan2/internal/repository"
+	"sample-tabungan2/service/transaction"
 	"sample-tabungan2/service/user"
 
 	"github.com/gocraft/work"
@@ -25,15 +26,18 @@ func main() {
 
 	// init repo
 	userRepo := repository.NewUserRepository(pgxPool)
+	trxRepo := repository.NewTransactionRepository(pgxPool)
 
 	// init pool worker for async process
 	var enqueuer = work.NewEnqueuer(cfg.WorkerNamespace, common.NewRedisPool(*cfg))
 
 	//init service
 	userSvc := user.NewUserService(userRepo, enqueuer)
+	trxSvc := transaction.NewTransactionService(trxRepo)
 
 	// init handler
 	userHandler := api.NewUserHTTPHandler(userSvc)
+	trxHandler := api.NewTransactionHTTPHandler(trxSvc)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World2!")
@@ -41,6 +45,7 @@ func main() {
 	e.Add(http.MethodPost, "/daftar", userHandler.Create)
 	e.Add(http.MethodPost, "/tabung", userHandler.Deposit)
 	e.Add(http.MethodPost, "/tarik", userHandler.Withdraw)
+	e.Add(http.MethodGet, "/mutasi/:no_rekening", trxHandler.ListByNoRekening)
 	e.Logger.Fatal(e.Start(":1323"))
 
 }

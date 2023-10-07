@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"sample-tabungan2/entity"
 	"time"
 )
 
@@ -28,4 +29,22 @@ func (q *TransactionRepository) Insert(ctx context.Context, args InsertTransacti
 		args.Nominal,
 	)
 	return err
+}
+
+func (q *TransactionRepository) ListByNoRekening(ctx context.Context, noRekening string) ([]entity.Transaction, error) {
+	rows, err := q.db.Query(ctx, getTransactionByRekening, noRekening)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []entity.Transaction
+	for rows.Next() {
+		var i entity.Transaction
+		if err := rows.Scan(&i.ID, &i.TransactionCode, &i.NoRekening, &i.CreatedDate, &i.Nominal); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+
+	return items, nil
 }
