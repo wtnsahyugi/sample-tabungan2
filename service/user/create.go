@@ -9,7 +9,7 @@ import (
 var charset = []byte("0123456789")
 
 func (svc *UserService) Create(ctx context.Context, name, nik, noHp string) (string, error) {
-
+	return "", nil
 }
 
 // n is the length of random string we want to generate

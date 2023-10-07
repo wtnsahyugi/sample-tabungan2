@@ -26,6 +26,9 @@ google_credential.json
 # Vendor
 vendor/
 
+# dbpassword secret
+db_password.txt
+
 _playground/
 .DS_Store
 
