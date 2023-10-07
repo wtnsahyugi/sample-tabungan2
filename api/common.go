@@ -11,7 +11,10 @@ import (
 func handleError(ctx echo.Context, err error) error {
 	code := http.StatusInternalServerError
 	switch err {
-	case entity.ErrUniqueHpNik:
+	case entity.ErrUniqueHpNik,
+		entity.ErrInvalidRequestPayload,
+		entity.ErrSaldoLessThanWithrawNominal,
+		entity.ErrSaldoZero:
 		code = http.StatusBadRequest
 	}
 	_ = ctx.JSON(code, map[string]string{

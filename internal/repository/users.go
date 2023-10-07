@@ -46,3 +46,21 @@ func (q *UserRepository) GetByNikAndPhoneNumber(ctx context.Context, nik, phoneN
 
 	return result, nil
 }
+
+func (q *UserRepository) GetByNoRekening(ctx context.Context, noRekening string) (entity.User, error) {
+	var result entity.User
+	row := q.db.QueryRow(ctx, getUserByNoRekening, noRekening)
+	if err := row.Scan(&result.ID, &result.Name, &result.NIK, &result.NoHP, &result.NoRekening, &result.Saldo); err != nil {
+		return entity.User{}, err
+	}
+
+	return result, nil
+}
+
+func (q *UserRepository) UpdateSaldo(ctx context.Context, noRekening string, saldo float64) error {
+	_, err := q.db.Exec(ctx, updateUserSaldoByRekening,
+		saldo,
+		noRekening,
+	)
+	return err
+}

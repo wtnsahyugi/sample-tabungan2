@@ -36,6 +36,8 @@ func main() {
 		return c.String(http.StatusOK, "Hello, World2!")
 	})
 	e.Add(http.MethodPost, "/daftar", userHandler.Create)
+	e.Add(http.MethodPost, "/tabung", userHandler.Deposit)
+	e.Add(http.MethodPost, "/tarik", userHandler.Withdraw)
 	e.Logger.Fatal(e.Start(":1323"))
 
 }
