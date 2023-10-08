@@ -16,7 +16,7 @@ rollback:
 	migrate -path migrations -database $(url) down 1
 
 run-app:
-	go run app/main.go
+	go run app/cmd/main.go
 
 run-subscriber:
-	go run subscriber/main.go
+	go run subscriber/cmd/main.go
